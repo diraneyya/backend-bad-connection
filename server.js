@@ -7,8 +7,10 @@ const app = express();
   
     app[verb]('/', function (req, res) {
     
-    const delayMin = parseInt(req.query?.min_delay) || 1000;
-    const delayRange = parseInt(req.query?.delay_range) || 0;
+    const delayMin = isFinite(parseInt(req.query?.min_delay)) ?
+      parseInt(req.query?.min_delay) : 1000;
+    const delayRange = isFinite(parseInt(req.query?.delay_range)) ?
+      parseInt(req.query?.delay_range) : 0;
     const delay = delayMin + Math.floor(Math.random() * delayRange);
     const canFail = req.query.hasOwnProperty('can_fail');
     const success = canFail ? Math.random() >= 0.5 : true;
@@ -23,7 +25,7 @@ const app = express();
     }, delay);
       
     console.log(`${verb.toUpperCase()}: delayed by ${delay} ms (returned HTTP ${code})`);
-    console.log({canFail});
+    console.log({delayMin, delayRange, delay, canFail, success, code});
   });
 });
 
